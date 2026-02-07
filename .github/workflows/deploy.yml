@@ -27,8 +27,7 @@ jobs:
         working-directory: ./plugins/template
         run: pnpm install
         
-      - name: Build plugin(s)
-        working-directory: ./plugins/template
+      - name: Build plugins
         run: node ./build.mjs
 
       - name: Copy additional files
