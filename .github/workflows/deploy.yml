@@ -2,33 +2,26 @@ name: Build and deploy
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Node 16
+      - name: Setup Node.js 16
         uses: actions/setup-node@v3
         with:
           node-version: "16"
 
-      - name: Remove existing pnpm
-        run: |
-          npm uninstall -g pnpm || true
-          rm -rf ~/.pnpm*
+      - name: Install pnpm 8.x
+        run: npm install -g pnpm@8.x
 
-      - name: Install pnpm 8
-        run: npm install -g pnpm@8.20.0
-
-      - name: Check pnpm version
-        run: pnpm --version
-
-      - name: Install deps
+      - name: Install dependencies
         working-directory: ./plugins/template
         run: pnpm install
 
@@ -36,7 +29,7 @@ jobs:
         working-directory: ./plugins/template
         run: pnpm run build
 
-      - name: Copy files
+      - name: Copy additional files
         run: |
           cp README.md dist/README.md
           printf -- "---\npermalink: /404.html\n---\n" > dist/404.md
