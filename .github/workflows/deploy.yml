@@ -20,7 +20,10 @@ jobs:
                   cache: "pnpm"
                   check-latest: true
 
-            - run: npm install -g pnpm@8
+            - name: Enable pnpm
+              run: |
+               corepack enable
+               corepack prepare pnpm@8.8.1 --activate
 
             - name: Install dependencies
               working-directory: ./plugins/template
