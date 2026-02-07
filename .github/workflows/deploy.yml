@@ -13,28 +13,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 8
+          cache: "pnpm"
 
       - name: Install dependencies
         working-directory: ./plugins/template
         run: pnpm install
 
-      - name: Build plugin(s)
-        run: node build.mjs
+      - name: Build plugin
+        working-directory: ./plugins/template
+        run: pnpm run build
 
       - name: Copy additional files
         run: |
           cp README.md dist/README.md
           printf -- "---\npermalink: /404.html\n---\n" > dist/404.md
-          printf -- "> **Note:** link goes here...\n\n" >> dist/404.md
+          printf -- "> **Note:** link goes here\n\n" >> dist/404.md
           cat README.md >> dist/404.md
 
       - name: Deploy to GitHub Pages
